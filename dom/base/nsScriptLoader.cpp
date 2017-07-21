@@ -1407,7 +1407,7 @@ nsScriptLoader::ProcessScriptElement(nsIScriptElement *aElement)
     //_MODIFY
     nsThread* mainThread;
     NS_GetMainThread((nsIThread**)(&mainThread));
-    //if(NS_GetCurrentThread() == mainThread && !isSystem){
+    if(NS_GetCurrentThread() == mainThread && !isSystem){
         set_synchronize(false);
         this->expTime = get_counter((void*)mDocument) + 1000;
         this->key = (void*)mDocument;
@@ -1415,7 +1415,7 @@ nsScriptLoader::ProcessScriptElement(nsIScriptElement *aElement)
         //request->key = (void*)key;
         mainThread->putFlag(this->expTime);
         printf("set expTime: %d, %ld\n", mDocument, this->expTime);
-    //}
+    }
     isSystem = true;
     //_MODIFY
 
@@ -1894,8 +1894,7 @@ nsScriptLoader::AttemptAsyncScriptCompile(nsScriptLoadRequest* aRequest)
   NS_GetMainThread((nsIThread**)(&mainThread));
   //if(this->expTime < 0 || this->expTime > get_counter() + 1000)this->expTime = get_counter();
   if(cross_origin){
-    //mainThread->expTime = getPhysicalTime();
-    mainThread->expTime = this->expTime;
+    mainThread->expTime = getPhysicalTime();
     mainThread->key = this->key;
     cross_origin = false;
   }else{
